@@ -22,20 +22,13 @@ export function ConflictingProcesses() {
 
 export function ControllableParameters() {
 	return [
-		{"property":"ProtocolMode", "group":"protocol", "label":"Protocol Mode",
+		{"property":"ProtocolMode", "group":"lighting", "label":"Protocol Mode",
 		 "type":"combobox",
-		 "values":[
-			"A: Minimal Transaction",
-			"B: No Transaction",
-			"C: Persistent Session",
-			"D: Output Report",
-			"E: Single Profile Minimal",
-			"F: Full Transaction (original)"
-		 ],
-		 "default":"A: Minimal Transaction"},
-		{"property":"TargetProfile", "group":"protocol", "label":"Target Profile (1-5)",
+		 "values":["Minimal", "NoTransaction", "Persistent", "OutputReport", "ColorOnly", "Full"],
+		 "default":"Minimal"},
+		{"property":"TargetProfile", "group":"lighting", "label":"Target Profile",
 		 "type":"number", "min":"1", "max":"5", "step":"1", "default":"1"},
-		{"property":"PacketDelay", "group":"protocol", "label":"Packet Delay (ms)",
+		{"property":"PacketDelay", "group":"lighting", "label":"Packet Delay Ms",
 		 "type":"number", "min":"0", "max":"50", "step":"1", "default":"0"},
 		{"property":"shutdownColor", "group":"lighting", "label":"Shutdown Color",
 		 "min":"0", "max":"360", "type":"color", "default":"009bde"},
@@ -71,7 +64,7 @@ export function Initialize() {
 	device.log("M908 plugin loaded - Protocol: " + ProtocolMode);
 
 	// Approach C opens the transaction once at init
-	if (ProtocolMode === "C: Persistent Session") {
+	if (ProtocolMode === "Persistent") {
 		sendOpen();
 		sessionOpen = true;
 		device.log("Persistent session opened");
@@ -94,15 +87,15 @@ export function Render() {
 	if (r !== lastR || g !== lastG || b !== lastB || Brightness !== lastBrightness) {
 		var mode = ProtocolMode;
 
-		if (mode === "A: Minimal Transaction") {
+		if (mode === "Minimal") {
 			approachA(r, g, b);
-		} else if (mode === "B: No Transaction") {
+		} else if (mode === "NoTransaction") {
 			approachB(r, g, b);
-		} else if (mode === "C: Persistent Session") {
+		} else if (mode === "Persistent") {
 			approachC(r, g, b);
-		} else if (mode === "D: Output Report") {
+		} else if (mode === "OutputReport") {
 			approachD(r, g, b);
-		} else if (mode === "E: Single Profile Minimal") {
+		} else if (mode === "ColorOnly") {
 			approachE(r, g, b);
 		} else {
 			approachF(r, g, b);
